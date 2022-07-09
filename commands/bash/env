@@ -1,0 +1,2 @@
+FLASK_APP='/home/ubuntu/tchou/tchou-server/tchou'
+FLASK_ENV=development
