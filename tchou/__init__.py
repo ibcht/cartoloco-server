@@ -15,6 +15,9 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
+    
+    # allow override from environment variable - external file configuration
+    app.config.from_envvar('TCHOU_SETTINGS')
 
     # ensure the instance folder exists
     try:
@@ -31,5 +34,8 @@ def create_app(test_config=None):
 
     from . import search
     app.register_blueprint(search.bp)
+
+    # DEBUG
+    print('TEST variable : ' + app.config.get('TEST',''))
 
     return app

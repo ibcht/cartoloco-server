@@ -35,6 +35,12 @@ Server starts on port 5000. However, you need to prepare the database first duri
 
 Now you're ready to go ! Browse to `http://localhost:5000/trips/search/bordeaux` to test.
 
-## Config your app
+## Configure tchou-server
 
-Copy the ./instance/config.sample.py file to ./instance/config.py to override default settings 
+### Development usage
+
+Copy the ./instance/config.sample.py file to ./instance/config.py to override default settings.
+
+### Production usage
+
+Run the app with the environment variable `TCHOU_SETTINGS=/path/to/config.py`, so the external configuration is possible.
