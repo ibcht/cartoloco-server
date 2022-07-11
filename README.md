@@ -16,7 +16,9 @@ python3 -m venv env
 Once in the venv, install dependencies :
 
 ```bash
-pip install -r requirements.txt
+pip -m install pip-tools
+pip-compile # generate requirements.txt from requirements.in
+pip-sync    # add / delete packages according to requirements.txt
 ```
 
 Then start flask embeded server :
