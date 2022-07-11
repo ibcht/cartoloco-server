@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export FLASK_APP="tchou"
+export TCHOU_SETTINGS="/home/ubuntu/config.py"
