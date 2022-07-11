@@ -3,7 +3,8 @@ venv/
 *.pyc
 __pycache__/
 
-instance
+instance/*
+!instance/config.sample.py
 
 .pytest_cache/
 .coverage

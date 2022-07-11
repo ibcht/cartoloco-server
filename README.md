@@ -37,27 +37,34 @@ Now you're ready to go ! Browse to `http://localhost:5000/trips/search/bordeaux`
 
 ### Production deployement
 
-Quick way to download, install and run with gunicorn, for the example
+Quick way to download, install and run with gunicorn, for the example (~3 minutes).
+
+Make sure to have Python3, pip, venv available before running.
 
 ```bash
 git clone git@github.com:ibcht/tchou-server.git
 cd tchou-server
 python3 -m venv venv
-. /venv/bin/activate
+. venv/bin/activate
+pip install wheel gunicorn
 pip install .
-pip install gunicorn
-cp config.sample.py config.py
 export FLASK_APP=tchou
-export TCHOU_SETTINGS='config.py'
-gunicorn -w 4 'tchou:create_app()'
+flask db:init # initialize database
+flask db:load-data # load GTFS data 
+flask db:generate-trips # trips calculation
+gunicorn -w 4 'tchou:create_app()' # run webserver
 ```
+
+Warning : this will create a sqlite3 database in the venv tchou instance by default, which is not recommended. See the Configuration section to customize this.
 
 ## Configure tchou-server
 
-### Development usage
+Run the app with the environment variable `TCHOU_SETTINGS=/path/to/config.py` (absolute path only), so you can override the default configuration.
 
-Copy the ./instance/config.sample.py file to ./instance/config.py to override default settings.
+Configuration available :
 
-### Production usage
-
-Run the app with the environment variable `TCHOU_SETTINGS=/path/to/config.py`, so the external configuration is possible.
+```python
+DATABASE='/path/to/tchou.sqlite' #absolute path only
+SECRET_KEY='dev'
+# to be continued ...
+```
