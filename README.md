@@ -66,5 +66,6 @@ Configuration available :
 ```python
 DATABASE='/path/to/tchou.sqlite' #absolute path only
 SECRET_KEY='dev'
+ALLOW_ORIGIN='http://front-end-server.com' # Access-Control-Allow-Origin header value
 # to be continued ...
 ```

@@ -1,6 +1,6 @@
 from sys import prefix
 from flask import (
-    Blueprint, flash, g, make_response, redirect, render_template, request, url_for, jsonify
+    Blueprint, current_app, flash, g, make_response, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -43,7 +43,7 @@ def get_stop(stop_id = ""):
         query='select tgt_id, type, src_name, tgt_name, min_time, max_time from times where src_id = ? order by tgt_name asc'
     res = db.execute(query,(stop_id,))
     resp = make_response(jsonify([dict(zip(row.keys(),tuple(row))) for row in res]))
-    resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
+    resp.headers['Access-Control-Allow-Origin'] = current_app.config['ALLOW_ORIGIN']
     return resp
     # return jsonify([dict(zip(row.keys(),tuple(row))) for row in res])
 
@@ -53,7 +53,7 @@ def search_stop(name_search = "IMPOSSIBLE A TROUVER"):
     db = get_db()
     res = db.execute("select distinct stop_id, stop_name, stop_lat, stop_lon from stops where location_type = '1' and stop_name like ? order by stop_name asc limit 5",(f'%{name_search}%',))
     resp = make_response(jsonify([dict(zip(row.keys(),tuple(row))) for row in res]))
-    resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
+    resp.headers['Access-Control-Allow-Origin'] = current_app.config['ALLOW_ORIGIN']
     return resp
     # return jsonify([dict(zip(row.keys(),tuple(row))) for row in res])
     
@@ -71,7 +71,7 @@ def list_all():
         cur.fetchmany(page * lines)   
     res = cur.fetchmany(lines)
     resp = make_response(jsonify([dict(zip(row.keys(),tuple(row))) for row in res]))
-    resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:4200'
+    resp.headers['Access-Control-Allow-Origin'] = current_app.config['ALLOW_ORIGIN'] #'http://localhost:4200'
     return resp
     # return jsonify([dict(zip(row.keys(),tuple(row))) for row in res])
 
