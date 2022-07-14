@@ -1,6 +1,19 @@
+## About tchou-server
+
+Find the direct routes available from a train station, and provide informations about the routes : trip duration, type of train, frequency.
+
+It is recommended to be used with the map frontend [tchou-client](https://github.com/ibcht/tchou-client).
+
+### Data sources
+
+Public datasets from SNCF available on data.sncf.com :
+* https://data.sncf.com/explore/dataset/horaires-des-train-voyages-tgvinouiouigo
+* https://data.sncf.com/explore/dataset/sncf-intercites-gtfs
+* https://data.sncf.com/explore/dataset/sncf-ter-gtfs
+
 ## Prerequisites
 
-Python 3, pip and venv
+Python 3, pip and venv.
 
 ## Install and run
 
@@ -59,7 +72,7 @@ gunicorn -w 4 'tchou:create_app()' # run webserver
 
 Warning : this will create a sqlite3 database in the venv tchou instance by default, which is not recommended. See the Configuration section to customize this.
 
-## Configure tchou-server
+## Configure
 
 Run the app with the environment variable `TCHOU_SETTINGS=/path/to/config.py` (absolute path only), so you can override the default configuration.
 
