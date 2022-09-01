@@ -1,11 +1,10 @@
 import os
 import sqlite3
-
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
-import tchou.ressources.gtfs_loader # TODO: should be relative to root path
+import tchou.core # TODO: should be relative to root path
 
 def get_db(force_create = False):
     if 'db' not in g:
@@ -29,7 +28,7 @@ def close_db(e=None):
 def db_init():
     """Clear the existing data and create new tables."""
     db = get_db(force_create=True)
-    loader = tchou.ressources.gtfs_loader.SncfGtfsLoader(db)
+    loader = tchou.core.SncfGtfsLoader(db)
     loader.db_init()
     click.echo('Initialized the database.')
 
@@ -38,7 +37,7 @@ def db_init():
 def db_load_data():
     """Clear the existing data and create new tables."""
     db = get_db()
-    loader = tchou.ressources.gtfs_loader.SncfGtfsLoader(db)
+    loader = tchou.core.SncfGtfsLoader(db)
     loader \
         .add_source('https://eu.ftp.opendatasoft.com/sncf/gtfs/export-ter-gtfs-last.zip') \
         .add_source('https://eu.ftp.opendatasoft.com/sncf/gtfs/export-intercites-gtfs-last.zip') \
@@ -51,7 +50,7 @@ def db_load_data():
 def db_generate_trips():
     """Clear the existing data and create new tables."""
     db = get_db()
-    trip_service = tchou.ressources.gtfs_loader.TripService(db)
+    trip_service = tchou.core.TripService(db)
     trip_service.generate_trips()
     click.echo('Trips generated.')
 

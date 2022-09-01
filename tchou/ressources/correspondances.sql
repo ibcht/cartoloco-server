@@ -1,7 +1,5 @@
 -- SQLite
 
-select 1 BETWEEN 1 and 3;
-
 select 
     count(*)
     st_first.arrival_time,

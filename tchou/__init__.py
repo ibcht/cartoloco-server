@@ -31,9 +31,9 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        return 'hello world ! le train va bientôt partir'
+        return 'Welcome to tchou-server !'
 
-    from . import search
-    app.register_blueprint(search.bp)
+    from . import trips
+    app.register_blueprint(trips.bp)
 
     return app

@@ -8,11 +8,10 @@ with open(os.path.join(os.path.dirname(__file__), 'requirements.in')) as f:
     required = f.read().splitlines()
 
 setup(
-    name='Tchou Server',
-    version='1.0',
+    name='tchou',
+    version='0.1',
     long_description=long_description,
     packages=['tchou'],
-    include_package_data=True,
     zip_safe=False,
     install_requires=required
 )
