@@ -1,10 +1,11 @@
 from sys import prefix
 from flask import (
-    Blueprint, current_app, flash, g, make_response, redirect, render_template, request, url_for, jsonify
+    Blueprint, current_app, g, make_response, request, jsonify
 )
-from werkzeug.exceptions import abort
 
 from tchou.db import get_db
+
+from geojson import Feature, Point, FeatureCollection
 
 bp = Blueprint('search', __name__, url_prefix='/trips')
 
@@ -26,7 +27,14 @@ def get_stop(stop_id = ""):
     else:
         query='select tgt_id, type, src_name, tgt_name, min_time, max_time from times where src_id = ? order by tgt_name asc'
     res = db.execute(query,(stop_id,))
-    resp = make_response(jsonify([dict(zip(row.keys(),tuple(row))) for row in res]))
+    features = FeatureCollection([
+        Feature(
+            id = row["tgt_id"],
+            geometry = Point((float(row["tgt_lon"]), float(row["tgt_lat"]))),
+            properties = {"name" : row["tgt_name"], "min_time" : row["min_time"], "max_time" : row["max_time"], "type" : row["type"], "id": row["tgt_id"] } # duplicate the tgt_id in properties as a workaround to mapbox who lose this information later
+        ) for row in res
+    ])
+    resp = make_response(features)
     resp.headers['Access-Control-Allow-Origin'] = current_app.config['ALLOW_ORIGIN']
     return resp
     # return jsonify([dict(zip(row.keys(),tuple(row))) for row in res])
