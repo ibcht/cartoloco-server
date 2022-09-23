@@ -1,3 +1,4 @@
+from json import loads
 from sys import prefix
 from flask import (
     Blueprint, current_app, g, make_response, request, jsonify
@@ -13,25 +14,26 @@ bp = Blueprint('search', __name__, url_prefix='/trips')
 @bp.route('/<stop_id>')
 def get_stop(stop_id = ""):
     db = get_db()
-    with_coord = request.args.get('coord', False, type=bool)
-    if with_coord:
-        query="""
-            select t.tgt_id, t.type, t.src_name, t.tgt_name, t.min_time, t.max_time,
-            ss.stop_lon as src_lon, ss.stop_lat as src_lat, 
-            st.stop_lon as tgt_lon, st.stop_lat as tgt_lat
-            from times t
-            join stops ss on t.src_id = ss.stop_id
-            join stops st on t.tgt_id = st.stop_id
-            where src_id = ? order by min_time asc;
-        """
-    else:
-        query='select tgt_id, type, src_name, tgt_name, min_time, max_time from times where src_id = ? order by tgt_name asc'
+    new_format = request.args.get('new_format', False, type=bool)
+    query="""
+        select t.tgt_id, t.type, t.src_name, t.tgt_name, t.min_time, t.max_time, json_group_array(distinct json_object('type', t.type, 'min_time', t.min_time, 'max_time', t.max_time)) as 'transports',
+        ss.stop_lon as src_lon, ss.stop_lat as src_lat, 
+        st.stop_lon as tgt_lon, st.stop_lat as tgt_lat
+        from times t
+        join stops ss on t.src_id = ss.stop_id
+        join stops st on t.tgt_id = st.stop_id
+        where src_id = ? 
+        group by t.src_id, t.tgt_id
+        order by min_time asc;
+    """
     res = db.execute(query,(stop_id,))
     features = FeatureCollection([
         Feature(
             id = row["tgt_id"],
             geometry = Point((float(row["tgt_lon"]), float(row["tgt_lat"]))),
-            properties = {"name" : row["tgt_name"], "min_time" : row["min_time"], "max_time" : row["max_time"], "type" : row["type"], "id": row["tgt_id"] } # duplicate the tgt_id in properties as a workaround to mapbox who lose this information later
+            #properties = {"name" : row["tgt_name"], "min_time" : row["min_time"], "max_time" : row["max_time"], "type" : row["type"], "id": row["tgt_id"] } # duplicate the tgt_id in properties as a workaround to mapbox who lose this information later
+            #properties = {"name" : row["tgt_name"], "transports" : loads(row["transports"]), "id": row["tgt_id"] } # duplicate the tgt_id in properties as a workaround to mapbox who lose this information later
+            properties = {"name" : row["tgt_name"], "transports" : loads(row["transports"]), "id": row["tgt_id"] } if new_format else {"name" : row["tgt_name"], "min_time" : row["min_time"], "max_time" : row["max_time"], "type" : row["type"], "id": row["tgt_id"] } # duplicate the tgt_id in properties as a workaround to mapbox who lose this information later
         ) for row in res
     ])
     resp = make_response(features)
