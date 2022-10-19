@@ -29,7 +29,7 @@ python3 -m venv env
 Once in the venv, install dependencies :
 
 ```bash
-pip -m install pip-tools
+pip install pip-tools
 pip-compile # generate requirements.txt from requirements.in
 pip-sync    # add / delete packages according to requirements.txt
 ```
