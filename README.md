@@ -1,8 +1,8 @@
-## About tchou-server
+## About cartoloco-server
 
 Find the direct routes available from a train station, and provide informations about the routes : trip duration, type of train, frequency.
 
-It is recommended to be used with the map frontend [tchou-client](https://github.com/ibcht/tchou-client).
+It is recommended to be used with the map frontend [cartoloco](https://github.com/ibcht/cartoloco).
 
 ### Data sources
 
@@ -57,8 +57,8 @@ Quick way to download, install and run with gunicorn, for the example (~3 minute
 Make sure to have Python3, pip, venv available before running.
 
 ```bash
-git clone git@github.com:ibcht/tchou-server.git
-cd tchou-server
+git clone git@github.com:ibcht/cartoloco-server.git
+cd cartoloco-server
 python3 -m venv venv
 . venv/bin/activate
 pip install wheel gunicorn
