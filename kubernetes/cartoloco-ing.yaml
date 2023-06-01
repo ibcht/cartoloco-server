@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: carto-ing
+  annotations:
+    nginx.org/rewrites: "serviceName=cartoloco-server-svc rewrite=/; serviceName=cartoloco-frontend-svc rewrite=/"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: cartoloco.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: cartoloco-server-svc
+            port:
+              number: 8000
+        path: /svc
+        pathType: Prefix
+      - backend:
+          service:
+            name: cartoloco-frontend-svc
+            port:
+              number: 8080
+        path: /app
+        pathType: Prefix
