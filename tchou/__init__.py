@@ -6,7 +6,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'tchou.sqlite'),
+        DB_PATH=app.instance_path,
         ALLOW_ORIGIN='http://localhost:4200'
     )
 
@@ -19,6 +19,9 @@ def create_app(test_config=None):
     
     # allow override from environment variable - external file configuration
     app.config.from_envvar('TCHOU_SETTINGS', silent=True)
+
+    # finally allow override directly from environment variables, i.e. FLASK_SECRET_KEY env will be available as SECRET_KEY
+    app.config.from_prefixed_env()
 
     # ensure the instance folder exists
     try:

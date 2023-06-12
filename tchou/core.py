@@ -1,6 +1,7 @@
 #!python3
 
 import csv
+from datetime import datetime
 import io
 import sqlite3
 from time import time
@@ -21,7 +22,9 @@ class SncfGtfsLoader:
 
     # 1. Load databases from SNCF public data (everyday refresh)
     def db_load(self):
-        db = self.db
+        db = self.db        
+        print(f'INSERT INTO properties (property, value) VALUES ("refresh_time", "{datetime.now().isoformat()}")')
+        db.execute('INSERT INTO properties (property, value) VALUES (?, ?)',("refresh_time",datetime.now().isoformat()))
         for table in GtfsSchema.gtfs_schema:
             #print(f'delete from {table}')
             db.execute(f'DELETE FROM {table}')
@@ -46,6 +49,11 @@ class SncfGtfsLoader:
             db.execute(f'DROP TABLE IF EXISTS {table};')
             print(f'CREATE TABLE {table} ({fields})')
             db.execute(f'CREATE TABLE {table} ({fields})')
+        # additional table properties to store custom values
+        print(f'DROP TABLE IF EXISTS properties')
+        db.execute(f'DROP TABLE IF EXISTS properties')        
+        print(f'CREATE TABLE properties (property PRIMARY KEY, value)')
+        db.execute(f'CREATE TABLE properties (property PRIMARY KEY, value)')
         db.commit()
     
 class GtfsSchema:
@@ -125,7 +133,7 @@ class GtfsSchema:
             'direction_id': int,
             'block_id': str,
             'shape_id': str
-        },
+        }
     }
 
     def __init__(self):

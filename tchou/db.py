@@ -8,9 +8,10 @@ import tchou.core # TODO: should be relative to root path
 
 def get_db(force_create = False):
     if 'db' not in g:
-        if os.path.isfile(current_app.config['DATABASE']) or force_create:
+        db_file = os.path.join(current_app.config['DB_PATH'], 'tchou.sqlite')
+        if os.path.isfile(db_file) or force_create:
             g.db = sqlite3.connect(
-                current_app.config['DATABASE'],
+                db_file,
                 detect_types=sqlite3.PARSE_DECLTYPES
             )
             g.db.row_factory = sqlite3.Row

@@ -73,6 +73,29 @@ def list_all():
     return resp
     # return jsonify([dict(zip(row.keys(),tuple(row))) for row in res])
 
+@bp.route('/infos/')
+@bp.route('/infos/<key>')
+def get_infos(key = None):
+    db = get_db()
+    # retourner toutes les propriétés (objet) (TODO voir si ok côté sécu)
+    if key is None:
+        query = "select * from properties"
+        cur = db.execute(query)
+        res = cur.fetchall()
+        resp = make_response(jsonify([dict(zip(row.keys(),tuple(row))) for row in res]))
+    # retourner seulement la propriété sélectionnée (string)
+    else:
+        query = "select * from properties where property = ?"
+        cur = db.execute(query, (key,))
+        row = cur.fetchone()
+        if row is None:
+            resp = make_response(None)
+        else:
+            # resp = make_response(jsonify({ row["property"]: row["value"] }))
+            resp = make_response(jsonify(row["value"]))
+    resp.headers['Access-Control-Allow-Origin'] = current_app.config['ALLOW_ORIGIN'] #'http://localhost:4200'
+    return resp
+
 def count_all():
     db = get_db()
     query = "select count(distinct stop_id) as count from stops where location_type = '1'"

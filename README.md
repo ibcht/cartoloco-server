@@ -26,7 +26,7 @@ python3 -m venv env
 . venv/bin/activate
 ```
 
-Once in the venv, install dependencies :
+Once in the venv, install dependencies (no gunicorn required) :
 
 ```bash
 pip install pip-tools
@@ -34,18 +34,28 @@ pip-compile # generate requirements.txt from requirements.in
 pip-sync    # add / delete packages according to requirements.txt
 ```
 
+Then set-up the evironment varibles :
+
+```bash
+export FLASK_APP=tchou
+export FLASK_ENV=dev
+```
+
 Then start flask embeded server :
 
 ```bash
-./commands/bash/start.sh
+flask db:init # initialize database
+flask db:load-data # load GTFS data 
+flask db:generate-trips # trips calculation
+flask run # run webserver
 ```
 
 Server starts on port 5000. However, you need to prepare the database first during the first install :
 
 ```bash
-./commands/bash/db-init.sh
-./commands/bash/db-load-data.sh
-./commands/bash/db-generate-trips.sh
+./commands/bash/development/db-init.sh
+./commands/bash/development/db-load-data.sh
+./commands/bash/development/db-generate-trips.sh
 ```
 
 Now you're ready to go ! Browse to `http://localhost:5000/trips/search/bordeaux` to test.
