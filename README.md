@@ -94,3 +94,10 @@ SECRET_KEY='dev'
 ALLOW_ORIGIN='http://front-end-server.com' # Access-Control-Allow-Origin header value
 # to be continued ...
 ```
+
+## Docker
+
+```bash
+docker buildx create --use
+docker buildx build --platform=linux/amd64,linux/arm64 -t 'cartoloco-server:mytag' .
+``` 
